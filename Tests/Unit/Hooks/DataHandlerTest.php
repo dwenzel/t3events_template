@@ -19,6 +19,7 @@ namespace CPSIT\T3eventsTemplate\Tests\Unit\Hooks;
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use CPSIT\T3eventsTemplate\DataHandling\Factory\EventRecordFactory;
 use CPSIT\T3eventsTemplate\Hooks\DataHandler;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
@@ -35,9 +36,9 @@ class DataHandlerTest extends UnitTestCase
     protected $subject;
 
     /**
-     * @var DatabaseConnection|\PHPUnit_Framework_MockObject_MockObject
+     * @var EventRecordFactory|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $dataBase;
+    protected $eventRecordFactory;
 
     /**
      * set up subject
@@ -46,21 +47,10 @@ class DataHandlerTest extends UnitTestCase
     {
         $this->subject = $this->getMockBuilder(DataHandler::class)
             ->setMethods(['dummy'])->getMock();
-    }
-
-    /**
-     * @test
-     */
-    public function constructorSetsDataBaseFromGlobals()
-    {
-        $mockDatabase = $this->getMockBuilder(DatabaseConnection::class)
-            ->disableOriginalConstructor()->getMock();
-        $GLOBALS['TYPO3_DB'] = $mockDatabase;
-        $this->subject->__construct();
-        $this->assertAttributeSame(
-            $mockDatabase,
-            'dataBase',
-            $this->subject
+        $this->eventRecordFactory = $this->getMockBuilder(EventRecordFactory::class)
+            ->setMethods(['processNewRecord'])->getMock();
+        $this->inject(
+            $this->subject, 'eventRecordFactory', $this->eventRecordFactory
         );
     }
 
@@ -203,8 +193,6 @@ class DataHandlerTest extends UnitTestCase
      */
     public function hookMethodProcessesMatchingRecordsFromDataMap($dataMap, $templateEnabledTypes, $expected)
     {
-        $this->subject = $this->getMockBuilder(DataHandler::class)
-            ->setMethods(['processNewRecord'])->getMock();
         $this->inject(
             $this->subject,
             'templateEnabledTypes',
@@ -215,7 +203,7 @@ class DataHandlerTest extends UnitTestCase
             ->disableOriginalConstructor()->getMock();
         $mockDataHandler->datamap = $dataMap;
 
-        $this->subject->expects($expected)->method('processNewRecord');
+        $this->eventRecordFactory->expects($expected)->method('processNewRecord');
         $this->subject->processDatamap_beforeStart($mockDataHandler);
     }
 }
