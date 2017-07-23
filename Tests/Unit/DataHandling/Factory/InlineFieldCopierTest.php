@@ -2,10 +2,11 @@
 
 namespace CPSIT\T3eventsTemplate\Tests\Unit\DataHandling\Factory;
 
-use CPSIT\T3eventsTemplate\DataHandling\Factory\SelectFieldCopier;
+use CPSIT\T3eventsTemplate\DataHandling\Factory\InlineFieldCopier;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
 
 /***************************************************************
  *  Copyright notice
@@ -23,21 +24,36 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * GNU General Public License for more details.
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-class SelectFieldCopierTest extends UnitTestCase
+class InlineFieldCopierTest extends UnitTestCase
 {
 
     /**
-     * @var SelectFieldCopier|\PHPUnit_Framework_MockObject_MockObject
+     * @var InlineFieldCopier|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $subject;
+
+    /**
+     * @var DataHandler|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $dataHandler;
+
+    /**
+     * @var DatabaseConnection|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $dataBase;
 
     /**
      * set up subject
      */
     public function setUp()
     {
-        $this->subject = $this->getMockBuilder(SelectFieldCopier::class)
+        $this->subject = $this->getMockBuilder(InlineFieldCopier::class)
             ->setMethods(['dummy', 'callStatic'])->getMock();
+        $this->dataBase = $this->getMockBuilder(DatabaseConnection::class)
+            ->disableOriginalConstructor()->setMethods(['fullQuoteString'])
+            ->getMock();
+        $this->dataHandler = $this->getMockBuilder(DataHandler::class)
+            ->disableOriginalConstructor()->getMock();
     }
 
     /**
@@ -57,25 +73,28 @@ class SelectFieldCopierTest extends UnitTestCase
     }
 
     /**
+     * @test
+     */
+    public function getDataBaseGetsDataBaseConnectionFromGlobals()
+    {
+        $GLOBALS['TYPO3_DB'] = $this->dataBase;
+
+        $this->assertSame(
+            $this->dataBase,
+            $this->subject->getDataBase()
+        );
+    }
+
+    /**
      * provides values for copy test
      */
     public function copyValueDataProvider()
     {
-        // $sourceRecord, $fieldConfig, $expected
+        // $sourceRecord, $fieldConfig, $expectCall, $sourceReferences, $expectedValue
         return [
             [
-                ['uid' => 1, 'foo' => 'baz'], ['renderType' => 'boom'], ''
-            ],
-            [
-                ['uid' => 1, 'foo' => 'baz'], ['renderType' => 'selectSingle'], 'baz'
-            ],
-            [
-                ['uid' => 1, 'foo' => 'baz'], ['renderType' => 'selectTree'], '1,5'
-            ],
-            [
-                ['uid' => 1, 'foo' => 'baz', 'foreign_table' => 'xyz'],
-                ['renderType' => 'selectMultipleSideBySide', 'foreign_table' => 'xyz'],
-                'xyz_1,xyz_5'
+                // empty config, empty result
+                ['uid' => 1, 'foo' => 'baz'], [], false, null, ''
             ]
         ];
     }
@@ -84,38 +103,37 @@ class SelectFieldCopierTest extends UnitTestCase
      * @test
      * @param array $sourceRecord
      * @param array $fieldConfig
-     * @param string $expected
+     * @param boolean $expectCall BackendUtility called
      * @dataProvider copyValueDataProvider
+     * @param array $sourceReferences
+     * @param string $expectedValue
      */
-    public function getValueReturnsCorrectValue($sourceRecord, $fieldConfig, $expected)
+    public function getValueReturnsCorrectValue($sourceRecord, $fieldConfig, $expectCall, $sourceReferences, $expectedValue)
     {
         $fieldName = 'foo';
         $templateTable = 'bar';
         $this->inject($this->subject, 'templateTable', $templateTable);
         $record = [];
-        $processedValue = '1;5';
-        $idArray = [1, 5];
-        $this->subject->expects($this->exactly(2))->method('callStatic')
-            ->withConsecutive(
-                [
+
+        if ($expectCall) {
+            $this->subject->expects($this->once())
+                ->method('callStatic')
+                ->with(
                     BackendUtility::class,
                     'getProcessedValue',
                     $templateTable,
                     $fieldName,
                     $sourceRecord[$fieldName],
                     0, false, true, $sourceRecord['uid']
-                ],
-                [
-                    GeneralUtility::class,
-                    'trimExplode', ';', $processedValue, true
-                ]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $processedValue, $idArray
-            );
+                )
+                ->will(
+                    $this->returnValue($sourceReferences)
+                );
+        }
         $this->assertSame(
-            $expected,
-            $this->subject->getValue($record, $fieldConfig, $sourceRecord, $fieldName)
+            $expectedValue,
+            $this->subject->getValue($record, $fieldConfig, $sourceRecord, $fieldName, $this->dataHandler)
         );
     }
 }
+

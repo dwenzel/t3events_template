@@ -26,23 +26,16 @@ use TYPO3\CMS\Core\DataHandling\DataHandler;
 
 /**
  * Class InlineFieldCopier
- * C
+ * Copies inline fields.
  */
 class InlineFieldCopier implements FieldCopierInterface, InitializeInterface
 {
     use CallStaticTrait;
+
     /**
      * @var string
      */
     protected $templateTable;
-
-    public function initialize($config)
-    {
-        if (isset($config['templateTable'])) {
-            $this->templateTable = $config['templateTable'];
-        }
-
-    }
 
     /**
      * @var DatabaseConnection
@@ -50,15 +43,16 @@ class InlineFieldCopier implements FieldCopierInterface, InitializeInterface
     protected $dataBase;
 
     /**
-     * @return DatabaseConnection
+     * Initialize copier by config
+     *
+     * @param array $config
+     * @return void
      */
-    public function getDataBase()
+    public function initialize($config)
     {
-        if (!$this->dataBase instanceof DatabaseConnection) {
-            $this->dataBase = $GLOBALS['TYPO3_DB'];
+        if (isset($config['templateTable'])) {
+            $this->templateTable = $config['templateTable'];
         }
-
-        return $this->dataBase;
     }
 
     /**
@@ -91,12 +85,13 @@ class InlineFieldCopier implements FieldCopierInterface, InitializeInterface
     }
 
     /**
+     * Gets the records referenced in source record
      * @param $fieldConfig
      * @param $sourceRecord
      * @param $foreignTable
      * @return mixed
      */
-    protected function getSourceReferences($fieldConfig, $sourceRecord, $foreignTable): mixed
+    protected function getSourceReferences($fieldConfig, $sourceRecord, $foreignTable)
     {
         $sourceReferences = [];
         $sourceRecordId = (int)$sourceRecord['uid'];
@@ -132,11 +127,25 @@ class InlineFieldCopier implements FieldCopierInterface, InitializeInterface
     }
 
     /**
+     * @return DatabaseConnection
+     */
+    public function getDataBase()
+    {
+        if (!$this->dataBase instanceof DatabaseConnection) {
+            $this->dataBase = $GLOBALS['TYPO3_DB'];
+        }
+
+        return $this->dataBase;
+    }
+
+    /**
+     * Gets an array of references in
+     * the syntax required for the datamap of the core DataHandler
      * @param $record
      * @param $sourceReferences
      * @return array
      */
-    protected function getNewReferences($record, $sourceReferences): array
+    protected function getNewReferences($record, $sourceReferences)
     {
         $newReferences = [];
         foreach ($sourceReferences as $sourceReference) {
@@ -157,3 +166,4 @@ class InlineFieldCopier implements FieldCopierInterface, InitializeInterface
         return $newReferences;
     }
 }
+
