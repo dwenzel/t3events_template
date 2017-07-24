@@ -43,6 +43,7 @@ class EventRecordFactoryTest extends UnitTestCase
     public function setUp()
     {
         $this->subject = $this->getMockBuilder(EventRecordFactory::class)
+            ->disableOriginalConstructor()
             ->setMethods(['dummy'])->getMock();
     }
 
@@ -63,6 +64,56 @@ class EventRecordFactoryTest extends UnitTestCase
             $mockDatabase,
             'dataBase',
             $this->subject
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function constructorSetsTemplateEnabledTypes() {
+        $templateEnabledTypes = ['foo'];
+        $GLOBALS['TCA'][EventRecordFactory::TARGET_TABLE]['ctrl']['templateEnabledTypes'] = $templateEnabledTypes;
+
+        $this->subject->__construct();
+        $this->assertSame(
+            $templateEnabledTypes,
+            $this->subject->getTemplateEnabledTypes()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function constructorSetsTypeField() {
+        $type = 'foo';
+        $GLOBALS['TCA'][EventRecordFactory::TARGET_TABLE]['ctrl']['type'] = $type;
+
+        $this->subject->__construct();
+        $this->assertSame(
+            $type,
+            $this->subject->getTypeField()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function typeFieldHasInitialValue() {
+        $this->assertSame(
+            EventRecordFactory::DEFAULT_TYPE_FIELD,
+            $this->subject->getTypeField()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function typeFieldCanBeSet() {
+        $type = 'foo';
+        $this->subject->setTypeField($type);
+        $this->assertSame(
+            $type,
+            $this->subject->getTypeField()
         );
     }
 
