@@ -20,6 +20,7 @@ namespace CPSIT\T3eventsTemplate\DataHandling\Factory;
  ***************************************************************/
 
 use DWenzel\T3events\CallStaticTrait;
+use DWenzel\T3events\InvalidConfigurationException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -88,12 +89,21 @@ class InlineFieldCopier implements FieldCopierInterface, InitializeInterface
      * Gets the records referenced in source record
      * @param $fieldConfig
      * @param $sourceRecord
-     * @param $foreignTable
-     * @return mixed
+     * @param string $foreignTable
+     * @return array
+     * @throws InvalidConfigurationException
      */
     protected function getSourceReferences($fieldConfig, $sourceRecord, $foreignTable)
     {
         $sourceReferences = [];
+        if (empty($foreignTable)) {
+            return $sourceReferences;
+        }
+        if (!isset($GLOBALS['TCA'][$foreignTable])) {
+            throw new InvalidConfigurationException(
+                'Missing configuration for foreign table ' . $foreignTable, 1500899571
+            );
+        }
         $sourceRecordId = (int)$sourceRecord['uid'];
 
         $foreignField = 'uid_foreign';
@@ -101,27 +111,26 @@ class InlineFieldCopier implements FieldCopierInterface, InitializeInterface
             $foreignField = $fieldConfig['foreign_field'];
         }
 
-        if ($foreignTable && $GLOBALS['TCA'][$foreignTable]) {
-            $whereClause = '';
-            if (isset($fieldConfig['foreign_table_field'])) {
-                $foreignTableField = $fieldConfig['foreign_table_field'];
-            }
-            if (!empty($foreignTableField)) {
-                $whereClause .= ' AND ' . $foreignTableField . ' = '
-                    . $this->getDataBase()->fullQuoteStr($this->templateTable, $foreignTable);
-            }
-            // Add additional where clause if foreign_match_fields are defined
-            $foreignMatchFields = is_array($fieldConfig['foreign_match_fields']) ? $fieldConfig['foreign_match_fields'] : [];
-            foreach ($foreignMatchFields as $matchField => $matchValue) {
-                $whereClause .= ' AND ' . $matchField . '=' . $this->getDataBase()->fullQuoteStr($matchValue, $foreignTable);
-            }
-
-            $sourceReferences = $this->callStatic(
-                BackendUtility::class,
-                'getRecordsByField',
-                $foreignTable, $foreignField, $sourceRecordId, $whereClause
-            );
+        $whereClause = '';
+        if (isset($fieldConfig['foreign_table_field'])) {
+            $foreignTableField = $fieldConfig['foreign_table_field'];
         }
+        if (!empty($foreignTableField)) {
+            $whereClause .= ' AND ' . $foreignTableField . ' = '
+                . $this->getDataBase()->fullQuoteStr($this->templateTable, $foreignTable);
+        }
+        // Add additional where clause if foreign_match_fields are defined
+        $foreignMatchFields = is_array($fieldConfig['foreign_match_fields']) ? $fieldConfig['foreign_match_fields'] : [];
+        foreach ($foreignMatchFields as $matchField => $matchValue) {
+            $whereClause .= ' AND ' . $matchField . '=' . $this->getDataBase()->fullQuoteStr($matchValue, $foreignTable);
+        }
+
+        $sourceReferences = $this->callStatic(
+            BackendUtility::class,
+            'getRecordsByField',
+            $foreignTable, $foreignField, $sourceRecordId, $whereClause
+        );
+
 
         return $sourceReferences;
     }

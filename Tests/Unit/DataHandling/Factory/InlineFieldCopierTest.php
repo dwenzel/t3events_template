@@ -3,6 +3,7 @@
 namespace CPSIT\T3eventsTemplate\Tests\Unit\DataHandling\Factory;
 
 use CPSIT\T3eventsTemplate\DataHandling\Factory\InlineFieldCopier;
+use DWenzel\T3events\InvalidConfigurationException;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
@@ -90,12 +91,23 @@ class InlineFieldCopierTest extends UnitTestCase
      */
     public function copyValueDataProvider()
     {
+        $sourceReferences = [
+            ['uid' => 2]
+        ];
         // $sourceRecord, $fieldConfig, $expectCall, $sourceReferences, $expectedValue
         return [
             [
                 // empty config, empty result
                 ['uid' => 1, 'foo' => 'baz'], [], false, null, ''
-            ]
+            ],
+            [
+                // empty config, empty result
+                ['uid' => 1, 'foo' => 'baz'],
+                [
+                    'foreign_table' => 'boom'
+                ],
+                true, [], ''
+            ],
         ];
     }
 
@@ -110,8 +122,13 @@ class InlineFieldCopierTest extends UnitTestCase
      */
     public function getValueReturnsCorrectValue($sourceRecord, $fieldConfig, $expectCall, $sourceReferences, $expectedValue)
     {
+        if (isset($fieldConfig['foreign_table'])) {
+            $GLOBALS['TCA'][$fieldConfig['foreign_table']] = ['ook'];
+        }
         $fieldName = 'foo';
+        $foreignField = 'uid_foreign';
         $templateTable = 'bar';
+        $whereClause = '';
         $this->inject($this->subject, 'templateTable', $templateTable);
         $record = [];
 
@@ -120,11 +137,11 @@ class InlineFieldCopierTest extends UnitTestCase
                 ->method('callStatic')
                 ->with(
                     BackendUtility::class,
-                    'getProcessedValue',
-                    $templateTable,
-                    $fieldName,
-                    $sourceRecord[$fieldName],
-                    0, false, true, $sourceRecord['uid']
+                    'getRecordsByField',
+                    $fieldConfig['foreign_table'],
+                    $foreignField,
+                    $sourceRecord['uid'],
+                    $whereClause
                 )
                 ->will(
                     $this->returnValue($sourceReferences)
@@ -135,5 +152,28 @@ class InlineFieldCopierTest extends UnitTestCase
             $this->subject->getValue($record, $fieldConfig, $sourceRecord, $fieldName, $this->dataHandler)
         );
     }
+
+    /**
+     * @test
+     * @expectedException \DWenzel\T3events\InvalidConfigurationException
+     * @expectedExceptionCode 1500899571
+     */
+    public function getValueThrowsExceptionForInvalidForeignTable()
+    {
+        $foreignTable = 'foo';
+        $fieldName = 'foo';
+        $templateTable = 'bar';
+        $this->inject($this->subject, 'templateTable', $templateTable);
+        $record = [];
+        $sourceRecord = [];
+
+        $fieldConf = [
+            'foreign_table' => $foreignTable
+        ];
+
+        unset($GLOBALS['TCA'][$foreignTable]);
+        $this->subject->getValue($record, $fieldConf, $sourceRecord, $fieldName, $this->dataHandler);
+    }
+
 }
 
