@@ -96,7 +96,7 @@ class EventRecordFactory implements RecordFactoryInterface
     /**
      * @param string $typeField
      */
-    public function setTypeField(string $typeField)
+    public function setTypeField($typeField)
     {
         $this->typeField = $typeField;
     }
