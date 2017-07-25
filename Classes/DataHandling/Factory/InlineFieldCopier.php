@@ -112,13 +112,11 @@ class InlineFieldCopier implements FieldCopierInterface, InitializeInterface
         }
 
         $whereClause = '';
-        if (isset($fieldConfig['foreign_table_field'])) {
+        if (!empty($fieldConfig['foreign_table_field'])) {
             $foreignTableField = $fieldConfig['foreign_table_field'];
+            $whereClause .= ' AND ' . $foreignTableField . ' = ' . $this->templateTable;
         }
-        if (!empty($foreignTableField)) {
-            $whereClause .= ' AND ' . $foreignTableField . ' = '
-                . $this->getDataBase()->fullQuoteStr($this->templateTable, $foreignTable);
-        }
+
         // Add additional where clause if foreign_match_fields are defined
         $foreignMatchFields = is_array($fieldConfig['foreign_match_fields']) ? $fieldConfig['foreign_match_fields'] : [];
         foreach ($foreignMatchFields as $matchField => $matchValue) {
