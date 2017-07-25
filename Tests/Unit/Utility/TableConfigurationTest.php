@@ -33,17 +33,6 @@ use Nimut\TestingFramework\TestCase\UnitTestCase;
 class TableConfigurationTest extends UnitTestCase
 {
     /**
-     * @var TableConfiguration
-     */
-    protected $subject;
-
-    public function setUp()
-    {
-        $this->subject = new TableConfiguration();
-    }
-
-
-    /**
      * @test
      */
     public function templateEnabledTypeCanBeRegistered()
@@ -55,7 +44,7 @@ class TableConfigurationTest extends UnitTestCase
             'showitem' => 'any'
         ];
 
-        $this->subject::registerTemplateEnabledType(
+        TableConfiguration::registerTemplateEnabledType(
             $type, $fieldList, $table
         );
         $this->assertSame(
@@ -74,7 +63,7 @@ class TableConfigurationTest extends UnitTestCase
         $fieldList = 'boom,bang';
         $GLOBALS['TCA'][$table]['ctrl']['templateEnabledTypes'] = [];
 
-        $this->subject::registerTemplateEnabledType(
+        TableConfiguration::registerTemplateEnabledType(
             $type, $fieldList, $table
         );
         $this->assertArrayNotHasKey(
@@ -109,7 +98,7 @@ class TableConfigurationTest extends UnitTestCase
                 'displayCond' => 'REC:NEW:false'
             ],
         ];
-        $this->subject::hideFieldsInNewRecords(
+        TableConfiguration::hideFieldsInNewRecords(
             $fieldList, $table
         );
 
