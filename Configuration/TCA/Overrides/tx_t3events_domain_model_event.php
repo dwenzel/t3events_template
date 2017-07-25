@@ -40,39 +40,8 @@ if (!isset($GLOBALS['TCA']['tx_t3events_domain_model_event']['columns']['tx_extb
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
         'tx_t3events_domain_model_event', 'tx_extbase_type', '', '');
 }
-$GLOBALS['TCA'][DataHandler::TARGET_TABLE]['ctrl']['templateEnabledTypes'] = [
-    '1' => [
-        'copyFields' => [
-            'new' => 'event_type,headline,subtitle,teaser,description,content_elements,images,image,files,related,
-            sys_language_uid,audience,organizer,genre,venue,keywords,performances,
-            l10n_parent, l10n_diffsource,new_until,archive_date,hidden,starttime,endtime,fe_group,categories'
-        ]
-    ]
-];
 
 
-$fieldsToHideForNewRecords = GeneralUtility::trimExplode(
-    ',',
-    'event_type,headline,subtitle,teaser,description,content_elements,images,image,files,related,
-            sys_language_uid,audience,organizer,genre,venue,keywords,performances,
-            l10n_parent, l10n_diffsource,new_until,archive_date,hidden,starttime,endtime,fe_group,categories',
-    true
-);
-
-foreach ($fieldsToHideForNewRecords as $fieldName) {
-    $currentDisplayCondition = $GLOBALS['TCA']['tx_t3events_domain_model_event']['columns'][$fieldName]['displayCond'];
-    $additionalDisplayCondition = 'REC:NEW:false';
-    if (is_string($currentDisplayCondition)) {
-        $GLOBALS['TCA']['tx_t3events_domain_model_event']['columns'][$fieldName]['displayCond'] = [
-            'AND' => [
-                $currentDisplayCondition,
-                $additionalDisplayCondition
-            ]
-        ];
-    } else {
-        $GLOBALS ['TCA']['tx_t3events_domain_model_event']['columns'][$fieldName]['displayCond'] = $additionalDisplayCondition;
-    }
-}
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns(
     'tx_t3events_domain_model_event',
     $temporaryColumns
