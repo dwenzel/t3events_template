@@ -114,7 +114,7 @@ class InlineFieldCopier implements FieldCopierInterface, InitializeInterface
         $whereClause = '';
         if (!empty($fieldConfig['foreign_table_field'])) {
             $foreignTableField = $fieldConfig['foreign_table_field'];
-            $whereClause .= ' AND ' . $foreignTableField . ' = ' . $this->templateTable;
+            $whereClause .= ' AND ' . $foreignTableField . ' = "' . $this->templateTable . '"';
         }
 
         // Add additional where clause if foreign_match_fields are defined
