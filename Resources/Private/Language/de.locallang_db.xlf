@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" target-language="de" datatype="plaintext" original="messages"
+          date="2016-09-06T07:59:21Z">
+        <header>
+            <type>database</type>
+            <description>Language labels for database tables/fields belonging to extension 't3events_template'
+            </description>
+            <generator>LFEditor</generator>
+            <authorName>Dirk Wenzel</authorName>
+            <authorEmail>t3events@gmx.de</authorEmail>
+        </header>
+        <body>
+            <trans-unit id="tx_t3events_domain_model_event.template">
+                <source>Template</source>
+                <target>Vorlage</target>
+            </trans-unit>
+            <trans-unit id="label.tx_extbase_type.default">
+            <source>Default</source>
+                <target>Standard</target>
+</trans-unit>
+            <trans-unit id="button.openLinkWizard">
+                <source>Edit link</source>
+                <target>Link bearbeiten</target>
+            </trans-unit>
+            <trans-unit id="label.add-images">
+                <source>Add Image</source>
+                <target>Bild hinzufügen</target>
+            </trans-unit>
+            <trans-unit id="label.link">
+                <source>Link</source>
+                <target>Link</target>
+            </trans-unit>
+            <trans-unit id="tx_t3eventstemplate_domain_model_eventtemplate" approved="yes">
+                <source>Event Template</source>
+                <target>Veranstaltungsvorlage</target>
+            </trans-unit>
+            <trans-unit id="tx_t3eventstemplate_domain_model_eventtemplate.archive_date" approved="yes">
+                <source>Archive Date</source>
+                <target>Archivdatum</target>
+            </trans-unit>
+            <trans-unit id="tx_t3eventstemplate_domain_model_eventtemplate.description" approved="yes">
+                <source>Description</source>
+                <target>Details</target>
+            </trans-unit>
+            <trans-unit id="tx_t3eventstemplate_domain_model_eventtemplate.event_type" approved="yes">
+                <source>Event Type</source>
+                <target>Veranstaltungstyp</target>
+            </trans-unit>
+            <trans-unit id="tx_t3eventstemplate_domain_model_eventtemplate.extended" approved="yes">
+                <source>Extended</source>
+                <target>Erweitert</target>
+            </trans-unit>
+            <trans-unit id="tx_t3eventstemplate_domain_model_eventtemplate.genre" approved="yes">
+                <source>Genre</source>
+                <target>Genre</target>
+            </trans-unit>
+            <trans-unit id="tx_t3eventstemplate_domain_model_eventtemplate.headline" approved="yes">
+                <source>Headline</source>
+                <target>Titel</target>
+            </trans-unit>
+            <trans-unit id="tx_t3eventstemplate_domain_model_eventtemplate.image" approved="yes">
+                <source>Image</source>
+                <target>Bild</target>
+            </trans-unit>
+            <trans-unit id="tx_t3eventstemplate_domain_model_eventtemplate.keywords" approved="yes">
+                <source>Keywords</source>
+                <target>Schlagworte</target>
+            </trans-unit>
+            <trans-unit id="tx_t3eventstemplate_domain_model_eventtemplate.new_until" approved="yes">
+                <source>New until</source>
+                <target>Neu bis</target>
+            </trans-unit>
+            <trans-unit id="tx_t3eventstemplate_domain_model_eventtemplate.organizer" approved="yes">
+                <source>Organizer</source>
+                <target>Veranstalter</target>
+            </trans-unit>
+            <trans-unit id="tx_t3eventstemplate_domain_model_eventtemplate.performance" approved="yes">
+                <source>Performance</source>
+                <target>Vorstellung</target>
+            </trans-unit>
+            <trans-unit id="tx_t3eventstemplate_domain_model_eventtemplate.performances" approved="yes">
+                <source>Performances</source>
+                <target>Vorstellungen</target>
+            </trans-unit>
+            <trans-unit id="tx_t3eventstemplate_domain_model_eventtemplate.subtitle" approved="yes">
+                <source>Subtitle</source>
+                <target>Untertitel</target>
+            </trans-unit>
+            <trans-unit id="tx_t3eventstemplate_domain_model_eventtemplate.teaser" approved="yes">
+                <source>Teaser</source>
+                <target>Teaser</target>
+            </trans-unit>
+            <trans-unit id="tx_t3eventstemplate_domain_model_eventtemplate.venue" approved="yes">
+                <source>Venue</source>
+                <target>Einrichtung</target>
+            </trans-unit>
+            <trans-unit id="tx_t3eventstemplate_domain_model_eventtemplate.tab.relations" approved="yes">
+                <source>Relations</source>
+                <target>Relationen</target>
+            </trans-unit>
+            <trans-unit id="tx_t3eventstemplate_domain_model_eventtemplate.images" approved="yes">
+                <source>Images</source>
+                <target>Bilder</target>
+            </trans-unit>
+            <trans-unit id="tx_t3eventstemplate_domain_model_eventtemplate.files" approved="yes">
+                <source>Files</source>
+                <target>Dateien</target>
+            </trans-unit>
+            <trans-unit id="tx_t3eventstemplate_domain_model_eventtemplate.related" approved="yes">
+                <source>Related events</source>
+                <target>Verwandte Events</target>
+            </trans-unit>
+            <trans-unit id="tx_t3eventstemplate_domain_model_eventtemplate.audience">
+                <source>Audience</source>
+                <target>Zielgruppe</target>
+            </trans-unit>
+
+        </body>
+    </file>
+</xliff>
