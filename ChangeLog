@@ -1,0 +1,16 @@
+2019-11-21         [RELEASE] Release of t3events_template 0.1.0 (Dirk Wenzel)
+2019-10-14 5265bca Description to add the repository into your composer.json added to the README.md. Additional minor changes in the README.md file. (j.fastnacht)
+2017-08-28 551b8bb [BUGFIX] fixed erro caused by missing quotation marks in InlineFieldCopier closes #1 (Dirk Wenzel)
+2017-07-25 696da75 [TASK] obsolete configuration for Event table removed. (Dirk Wenzel)
+2017-07-25 aa924fc [BUGFIX] syntax invalid for PHP 5.6 corrected. (Dirk Wenzel)
+2017-07-25 de30ebb [TASK] Utility/TableConfiguration implemented. InlineFieldCopier refactored. (Dirk Wenzel)
+2017-07-24 74b497e [TASK] unit tests for EventRecordFactory added (Dirk Wenzel)
+2017-07-24 c36669a [TASK] InlineFieldCopier now throws exception for invalid foreign table. Unit tests added. (Dirk Wenzel)
+2017-07-23 f847463 [TASK] unit tests for SelectFieldCopier and InlineFieldCopier added. (Dirk Wenzel)
+2017-07-22 1f12961 [TASK] travis-ci: configuration file for unit tests added. (Dirk Wenzel)
+2017-07-21 e07dbf2 [TASK] FieldCopierInterface, InitializeInterface, RecordFactoryInterface, EmptyFieldCopier, SimpleFieldCopier, InlineFieldCopier, SelectFieldCopier, EventRecordFactory implemented. DataHandler refactored using the EventFactory. (Dirk Wenzel)
+2017-07-17 28e0759 [TASK] DataHandler ported from customer project, unit tests added (Dirk Wenzel)
+2017-07-17 460f0a3 [TASK] configuration files for travis-ci, composer and ExtensionManager added. (Dirk Wenzel)
+2017-07-17 7095542 [TASK] README.md added (Dirk Wenzel)
+
+
