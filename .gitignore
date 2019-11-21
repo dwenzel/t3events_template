@@ -1,3 +1,5 @@
 *.iml
 .idea/
 Documentation/_build/
+.Build/
+composer.lock
